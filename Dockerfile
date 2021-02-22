@@ -22,16 +22,14 @@ RUN apk add --no-cache \
       mediainfo \
       tinyxml2 && \
     rm -rf /var/tmp/* /var/cache/apk/* && \
-    # Fix mono-bug: https://gitlab.alpinelinux.org/alpine/aports/-/issues/12388
-    ln -s /usr/lib/libmono-native.so.0 /usr/lib/libmono-native.so && \
     cert-sync /etc/ssl/certs/ca-certificates.crt && \
     # Create the 'sonarr' user and group; ensure it owns all relevant directories
     addgroup -g ${GID} sonarr && \
     adduser -D -G sonarr -s /bin/sh -u ${UID} sonarr && \
-    mkdir /config; chown -R ${UID}:${GID} /config && \
-    mkdir /media/downloads; chown -R ${UID}:${GID} /media/downloads && \
-    mkdir /media/series; chown -R ${UID}:${GID} /media/series && \
-    mkdir -p /tmp/.mono; chown -R ${UID}:${GID} /tmp/.mono
+    mkdir -p /config && chown -R ${UID}:${GID} /config && \
+    mkdir -p /media/downloads && chown -R ${UID}:${GID} /media/downloads && \
+    mkdir -p /media/series && chown -R ${UID}:${GID} /media/series && \
+    mkdir -p /tmp/.mono && chown -R ${UID}:${GID} /tmp/.mono
 
 ADD --chown=${UID}:${GID} Sonarr.phantom-develop.${SONARR_VERSION}.linux.tar.gz /opt
 

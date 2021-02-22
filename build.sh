@@ -9,8 +9,7 @@ SONARR_VERSION=${1:-$(echo "${SONARR_RAW}" | jq -r '.version')}
 SONARR_ASSET=$(echo "${SONARR_RAW}" | jq -r '.linux.manual.url')
 
 [ -n "${1}" ] && export SONARR_ASSET="${SONARR_ASSET//$(echo $SONARR_RAW | jq -r '.version')/${1}}"
-
-wget "${SONARR_ASSET}"
+[ ! -f "${SONARR_ASSET##*/}" ] && wget "${SONARR_ASSET}"
 
 docker buildx build \
   --file Dockerfile \
