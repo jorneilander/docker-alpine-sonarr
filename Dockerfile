@@ -13,6 +13,7 @@ ARG GID=8989
 # Install required base packages and remove any cache
 RUN apk add --no-cache \
       tini \
+      bash \
       ca-certificates && \
     apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
       mono \
