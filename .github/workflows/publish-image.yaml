@@ -63,7 +63,6 @@ jobs:
           SONARR_RAW=$(curl -s -H "Accept: application/json" https://services.sonarr.tv/v1/download/phantom-develop\?version\=3)
           SONARR_ASSET=$(echo "${SONARR_RAW}" | jq -r '.linux.manual.url')
 
-          echo ::set-output name=SONARR_VERSION::${SONARR_VERSION}
           # Set Sonarr version
           SONARR_VERSION=$(jq -r '.version' <<< "${SONARR_RAW}")
           SONARR_VERSION_MAJOR="${SONARR_VERSION%%.*}"
@@ -78,6 +77,8 @@ jobs:
           # Output user relevant information
           echo "Building: ${IMAGE_NAME}:${SONARR_VERSION}"
           echo "Tags: ['latest', '${SONARR_VERSION}', '${SONARR_VERSION_MAJOR}', ${SONARR_VERSION_MINOR}']"
+
+          echo "SONARR_VERSION=${SONARR_VERSION}" >> $GITHUB_OUTPUT
 
           docker buildx build \
             --file Dockerfile \
