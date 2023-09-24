@@ -50,10 +50,13 @@ jobs:
           ALPINE_VERSION="latest"
           IMAGE_NAME=failfr8er/sonarr
           SONARR_RAW=$(curl -s -H "Accept: application/json" https://services.sonarr.tv/v1/download/phantom-develop\?version\=3)
-          SONARR_VERSION=$(echo "${SONARR_RAW}" | jq -r '.version')
           SONARR_ASSET=$(echo "${SONARR_RAW}" | jq -r '.linux.manual.url')
 
           echo ::set-output name=SONARR_VERSION::${SONARR_VERSION}
+          # Set Sonarr version
+          SONARR_VERSION=$(jq -r '.version' <<< "${SONARR_RAW}")
+          SONARR_VERSION_MAJOR="${SONARR_VERSION%%.*}"
+          SONARR_VERSION_MINOR="${SONARR_VERSION%.*.*}"
 
           wget "${SONARR_ASSET}"
 
@@ -62,12 +65,13 @@ jobs:
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache \
             --tag ${IMAGE_NAME}:latest \
-            --tag ${IMAGE_NAME}:3 \
-            --tag ${IMAGE_NAME}:${SONARR_VERSION} \
             --push \
             --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
             --build-arg SONARR_VERSION="${SONARR_VERSION}" \
             --platform=linux/amd64 \
+            --tag "${IMAGE_NAME}:${SONARR_VERSION}" \
+            --tag "${IMAGE_NAME}:${SONARR_VERSION_MAJOR}" \
+            --tag "${IMAGE_NAME}:${SONARR_VERSION_MINOR}" \
             .
 
       - name: Run Trivy vulnerability scanner
