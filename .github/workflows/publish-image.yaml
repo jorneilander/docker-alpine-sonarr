@@ -75,6 +75,10 @@ jobs:
           DOCKER_OUTPUT_TYPE="docker"
           [[ "${GITHUB_REF_NAME}" = "master" ]] && DOCKER_OUTPUT_TYPE="registry"
 
+          # Output user relevant information
+          echo "Building: ${IMAGE_NAME}:${SONARR_VERSION}"
+          echo "Tags: ['latest', '${SONARR_VERSION}', '${SONARR_VERSION_MAJOR}', ${SONARR_VERSION_MINOR}']"
+
           docker buildx build \
             --file Dockerfile \
             --cache-from=type=local,src=/tmp/.buildx-cache \
