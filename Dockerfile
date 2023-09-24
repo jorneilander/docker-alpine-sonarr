@@ -32,7 +32,7 @@ RUN apk add --no-cache \
     mkdir /media/series; chown -R ${UID}:${GID} /media/series && \
     mkdir -p /tmp/.mono; chown -R ${UID}:${GID} /tmp/.mono
 
-ADD --chown=${UID}:${GID} Sonarr.phantom-develop.${SONARR_VERSION}.linux.tar.gz /opt
+ADD --chown=${UID}:${GID} Sonarr.main.${SONARR_VERSION}.linux.tar.gz /opt
 
 # Publish volumes, ports etc
 ENV XDG_CONFIG_HOME=/tmp

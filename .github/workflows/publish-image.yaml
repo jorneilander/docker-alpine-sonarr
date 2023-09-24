@@ -60,15 +60,18 @@ jobs:
 
           ALPINE_VERSION="latest"
           IMAGE_NAME=failfr8er/sonarr
-          SONARR_RAW=$(curl -s -H "Accept: application/json" https://services.sonarr.tv/v1/download/phantom-develop\?version\=3)
-          SONARR_ASSET=$(echo "${SONARR_RAW}" | jq -r '.linux.manual.url')
+
+          # Fetch Sonarr release information
+          SONARR_RAW=$(curl -s https://services.sonarr.tv/v1/download/main)
 
           # Set Sonarr version
           SONARR_VERSION=$(jq -r '.version' <<< "${SONARR_RAW}")
           SONARR_VERSION_MAJOR="${SONARR_VERSION%%.*}"
           SONARR_VERSION_MINOR="${SONARR_VERSION%.*.*}"
 
-          wget "${SONARR_ASSET}"
+          # Fetch Sonarr artifact
+          SONARR_ARTIFACT_URL=$(echo "${SONARR_RAW}" | jq -r '.linux.manual.url')
+          [[ -e "${SONARR_ARTIFACT_URL##*/}" ]] || wget --no-verbose "${SONARR_ARTIFACT_URL}"
 
           # Set option to push built image
           DOCKER_OUTPUT_TYPE="docker"
