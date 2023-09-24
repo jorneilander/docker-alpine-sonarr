@@ -15,6 +15,10 @@ SONARR_VERSION=$(jq -r '.version' <<< "${SONARR_RAW}")
 SONARR_VERSION_MAJOR="${SONARR_VERSION%%.*}"
 SONARR_VERSION_MINOR="${SONARR_VERSION%.*.*}"
 
+# Output user relevant information
+echo "Building: failfr8er/sonarr:${SONARR_VERSION}"
+echo "Tags: ['latest', '${SONARR_VERSION}', '${SONARR_VERSION_MAJOR}', ${SONARR_VERSION_MINOR}']"
+
 docker buildx build \
   --file Dockerfile \
   --cache-from=type=local,src=/tmp/.buildx \
