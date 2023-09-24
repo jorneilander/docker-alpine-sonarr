@@ -46,7 +46,7 @@ jobs:
         id: vars
         run: |
           set -e
-          ALPINE_VERSION=3.12
+          ALPINE_VERSION="latest"
           IMAGE_NAME=failfr8er/sonarr
           SONARR_RAW=$(curl -s -H "Accept: application/json" https://services.sonarr.tv/v1/download/phantom-develop\?version\=3)
           SONARR_VERSION=$(echo "${SONARR_RAW}" | jq -r '.version')
