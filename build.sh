@@ -2,18 +2,20 @@
 # set -x
 set -e
 
-IMAGE_NAME=failfr8er/sonarr
-SONARR_RAW=$(curl -s https://services.sonarr.tv/v1/download/phantom-develop\?version\=3)
-SONARR_ASSET=$(echo "${SONARR_RAW}" | jq -r '.linux.manual.url')
 ALPINE_VERSION="latest"
+IMAGE_NAME="failfr8er/sonarr"
 
-[ -n "${1}" ] && export SONARR_ASSET="${SONARR_ASSET//$(echo $SONARR_RAW | jq -r '.version')/${1}}"
+# Fetch Sonarr release information
+SONARR_RAW=$(curl -s https://services.sonarr.tv/v1/download/main)
 
-wget "${SONARR_ASSET}"
 # Set Sonarr version
 SONARR_VERSION=$(jq -r '.version' <<< "${SONARR_RAW}")
 SONARR_VERSION_MAJOR="${SONARR_VERSION%%.*}"
 SONARR_VERSION_MINOR="${SONARR_VERSION%.*.*}"
+
+# Fetch Sonarr artifact
+SONARR_ARTIFACT_URL=$(echo "${SONARR_RAW}" | jq -r '.linux.manual.url')
+[[ -e "${SONARR_ARTIFACT_URL##*/}" ]] || wget "${SONARR_ARTIFACT_URL}"
 
 # Output user relevant information
 echo "Building: failfr8er/sonarr:${SONARR_VERSION}"
@@ -32,5 +34,3 @@ docker buildx build \
   --build-arg SONARR_VERSION="${SONARR_VERSION}" \
   --platform=linux/amd64 \
   .
-
-rm Sonarr.phantom-develop.*.linux.tar.gz
