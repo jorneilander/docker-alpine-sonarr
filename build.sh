@@ -2,11 +2,11 @@
 # set -x
 set -e
 
-ALPINE_VERSION=3.12
 IMAGE_NAME=failfr8er/sonarr
 SONARR_RAW=$(curl -s https://services.sonarr.tv/v1/download/phantom-develop\?version\=3)
 SONARR_VERSION=${1:-$(echo "${SONARR_RAW}" | jq -r '.version')}
 SONARR_ASSET=$(echo "${SONARR_RAW}" | jq -r '.linux.manual.url')
+ALPINE_VERSION="latest"
 
 [ -n "${1}" ] && export SONARR_ASSET="${SONARR_ASSET//$(echo $SONARR_RAW | jq -r '.version')/${1}}"
 
