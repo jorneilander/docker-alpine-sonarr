@@ -27,10 +27,10 @@ RUN apk add --no-cache \
     # Create the 'sonarr' user and group; ensure it owns all relevant directories
     addgroup -g ${GID} sonarr && \
     adduser -D -G sonarr -s /bin/sh -u ${UID} sonarr && \
-    mkdir /config; chown -R ${UID}:${GID} /config && \
-    mkdir /media/downloads; chown -R ${UID}:${GID} /media/downloads && \
-    mkdir /media/series; chown -R ${UID}:${GID} /media/series && \
-    mkdir -p /tmp/.mono; chown -R ${UID}:${GID} /tmp/.mono
+    mkdir /config && chown -R ${UID}:${GID} /config && \
+    mkdir -p /media/downloads && chown -R ${UID}:${GID} /media/downloads && \
+    mkdir -p /media/series && chown -R ${UID}:${GID} /media/series && \
+    mkdir -p /tmp/.mono && chown -R ${UID}:${GID} /tmp/.mono
 
 ADD --chown=${UID}:${GID} Sonarr.main.${SONARR_VERSION}.linux.tar.gz /opt
 
@@ -44,6 +44,4 @@ WORKDIR /config
 
 # Define default start command
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["mono", "/opt/Sonarr/Sonarr.exe", "-data /config", "", "-l", "-nobrowser"]
-
-
+CMD ["mono", "/opt/Sonarr/Sonarr.exe", "--data=/config", "", "-l", "--nobrowser"]
