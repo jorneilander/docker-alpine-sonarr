@@ -55,7 +55,7 @@ jobs:
       - name: Build and publish
         id: vars
         run: |
-          set -e
+          set -o errexit
           [[ "${{ inputs.SHELL_XTRACE_ENABLED }}" = "true" ]] && set -o xtrace
 
           ALPINE_VERSION="latest"
@@ -85,15 +85,15 @@ jobs:
 
           docker buildx build \
             --file Dockerfile \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache \
-            --tag ${IMAGE_NAME}:latest \
-            --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
-            --build-arg SONARR_VERSION="${SONARR_VERSION}" \
-            --platform=linux/amd64 \
+            --cache-from=type="local,src=/tmp/.buildx-cache" \
+            --cache-to=type="local,dest=/tmp/.buildx-cache" \
+            --tag "${IMAGE_NAME}:latest" \
             --tag "${IMAGE_NAME}:${SONARR_VERSION}" \
             --tag "${IMAGE_NAME}:${SONARR_VERSION_MAJOR}" \
             --tag "${IMAGE_NAME}:${SONARR_VERSION_MINOR}" \
+            --build-arg "ALPINE_VERSION=${ALPINE_VERSION}" \
+            --build-arg "SONARR_VERSION=${SONARR_VERSION}" \
+            --platform="linux/amd64" \
             --output=type="${DOCKER_OUTPUT_TYPE}" \
             .
 
