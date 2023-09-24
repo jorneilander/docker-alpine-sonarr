@@ -71,18 +71,22 @@ jobs:
 
           wget "${SONARR_ASSET}"
 
+          # Set option to push built image
+          DOCKER_OUTPUT_TYPE="docker"
+          [[ "${GITHUB_REF_NAME}" = "master" ]] && DOCKER_OUTPUT_TYPE="registry"
+
           docker buildx build \
             --file Dockerfile \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache \
             --tag ${IMAGE_NAME}:latest \
-            --push \
             --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
             --build-arg SONARR_VERSION="${SONARR_VERSION}" \
             --platform=linux/amd64 \
             --tag "${IMAGE_NAME}:${SONARR_VERSION}" \
             --tag "${IMAGE_NAME}:${SONARR_VERSION_MAJOR}" \
             --tag "${IMAGE_NAME}:${SONARR_VERSION_MINOR}" \
+            --output=type="${DOCKER_OUTPUT_TYPE}" \
             .
 
       - name: Run Trivy vulnerability scanner
